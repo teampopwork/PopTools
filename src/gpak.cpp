@@ -1,4 +1,5 @@
 #include "gpak.hpp"
+#include "paktool.hpp"
 #include <fstream>
 #include <stdexcept>
 #include <cstring>
@@ -48,9 +49,12 @@ void GPAK::Create(const std::string &pakPath, const std::vector<std::string> &in
 
 	std::vector<GPAKFileEntry> entries;
 	auto files = collectFiles(inputs);
-
+	mTotalFiles = files.size();
+	mProcessedFiles = 0;
 	for (const auto &fullPath : files)
 	{
+		PopWork::gPopPak->mCurrentProccesedFile = fullPath;
+
 		std::ifstream in(fullPath, std::ios::binary | std::ios::ate);
 		if (!in)
 			throw std::runtime_error("Could not read: " + fullPath);
@@ -86,6 +90,7 @@ void GPAK::Create(const std::string &pakPath, const std::vector<std::string> &in
 
 		out.write(reinterpret_cast<const char *>(compressed.data()), compressed.size());
 		entries.push_back(entry);
+		mProcessedFiles++;
 	}
 
 	header.fileTableOffset = static_cast<uint64_t>(out.tellp());
@@ -113,8 +118,12 @@ void GPAK::Extract(const std::string &pakPath, const std::string &outputFolder)
 	std::vector<GPAKFileEntry> entries(header.fileCount);
 	in.read(reinterpret_cast<char *>(entries.data()), entries.size() * sizeof(GPAKFileEntry));
 
+	mProcessedFiles = 0;
+	mTotalFiles = entries.size();
+	
 	for (const auto &entry : entries)
 	{
+		PopWork::gPopPak->mCurrentProccesedFile = entry.path;
 		in.seekg(entry.dataOffset);
 
 		std::vector<uint8_t> compressed(entry.compressedSize);
@@ -142,6 +151,8 @@ void GPAK::Extract(const std::string &pakPath, const std::string &outputFolder)
 			throw std::runtime_error("Failed to create output file: " + outPath.string());
 
 		out.write(reinterpret_cast<char *>(decompressed.data()), decompressed.size());
+
+		mProcessedFiles++;
 	}
 }
 

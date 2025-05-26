@@ -12,10 +12,23 @@ int StartPacking(void *theArg)
 	aPopPak->mGPAK = new GPAK();
 	aPopPak->mGPAK->SetPassword(aPopPak->mPassword);
     aPopPak->mDoProgressBar = true;
-	aPopPak->mGPAK->Create(aPopPak->mPakName,{aPopPak->mInputFolderPath});
+	aPopPak->mGPAK->Create(aPopPak->mPakName,{aPopPak->mPakFileOutputFolder});
     gPopPak->mDoProgressBar = false;
     return 0;
 }
+
+int StartUnpacking(void *theArg)
+{
+    PopPak *aPopPak = (PopPak *)theArg;
+
+	aPopPak->mGPAK = new GPAK();
+	aPopPak->mGPAK->SetPassword(aPopPak->mPassword);
+    aPopPak->mDoProgressBar = true;
+	aPopPak->mGPAK->Extract(aPopPak->mPathToPack,{aPopPak->mUnpackOutputFolder});
+    gPopPak->mDoProgressBar = false;
+    return 0;
+}
+
 
 
 PopPak::PopPak()
@@ -24,7 +37,11 @@ PopPak::PopPak()
     mDoProgressBar = true;
     mPassword = "";
     mPakName = "";
-    mInputFolderPath = "";
+    mPakFileOutputFolder = "";
+    mPathToPack = "";
+    mUnpackOutputFolder = "";
+    mCurrentProccesedFile = "";
+    mCurrentOperation = "";
     mGPAK = nullptr;
 }
     
@@ -34,39 +51,15 @@ PopPak::~PopPak()
 
 void PopPak::Package()
 {
+    mCurrentOperation = "Packing";
     SDL_Thread *aPackThread = SDL_CreateThread(StartPacking, "PackingThread", (void *)this);
     SDL_DetachThread(aPackThread);
 }
     
 
-void PopPak::Unpackage()
+void PopPak::Extract()
 {
-
-}
-    
-
-void PopPak::SetPassword(const std::string &theNewPass)
-{
-    mPassword = theNewPass;
-}
-    
-
-void PopPak::SetPakName(const std::string &theNewName)
-{
-    mPakName = theNewName;
-}
-
-void PopPak::SetInputFolderPath(const std::string &theNewFolder)
-{
-    mInputFolderPath = theNewFolder;
-}
-
-void PopPak::Extract(const std::string& pakPath, const std::string& outputFolder)
-{
-    if (!mPassword.empty())
-        mGPAK->SetPassword(mPassword);
-    if (!pakPath.empty() && !outputFolder.empty())
-    {
-        mGPAK->Extract(pakPath, outputFolder);
-    }
+    mCurrentOperation = "Extracting";
+    SDL_Thread *aPackThread = SDL_CreateThread(StartUnpacking, "ExtractThread", (void *)this);
+    SDL_DetachThread(aPackThread);
 }

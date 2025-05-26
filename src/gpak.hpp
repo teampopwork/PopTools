@@ -44,6 +44,9 @@ class GPAK
 		password = pw;
 	}
 
+	int mTotalFiles;
+	int mProcessedFiles;
+
   private:
 	std::string password;
 

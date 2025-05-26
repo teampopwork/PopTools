@@ -17,21 +17,17 @@ namespace PopWork
         ~PopPak();
 
         void Package();
-        void Unpackage();
-
-        void SetPassword(const std::string &theNewPass);
-        
-        void SetPakName(const std::string &theNewName);
-        
-        void SetInputFolderPath(const std::string &theNewFolder);
-
-        void Extract(const std::string& pakPath, const std::string& outputFolder);
+        void Extract();
 
         ::GPAK *mGPAK; 
         std::string mPassword;
 
         std::string mPakName;
-        std::string mInputFolderPath;
+        std::string mPathToPack;
+        std::string mPakFileOutputFolder;
+        std::string mUnpackOutputFolder;
+        std::string mCurrentProccesedFile;
+        std::string mCurrentOperation;
 
         bool mDoProgressBar;
     };
