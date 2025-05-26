@@ -55,10 +55,18 @@ void PopPak::SetPakName(const std::string &theNewName)
 {
     mPakName = theNewName;
 }
-    
 
 void PopPak::SetInputFolderPath(const std::string &theNewFolder)
 {
     mInputFolderPath = theNewFolder;
 }
-    
+
+void PopPak::Extract(const std::string& pakPath, const std::string& outputFolder)
+{
+    if (!mPassword.empty())
+        mGPAK->SetPassword(mPassword);
+    if (!pakPath.empty() && !outputFolder.empty())
+    {
+        mGPAK->Extract(pakPath, outputFolder);
+    }
+}

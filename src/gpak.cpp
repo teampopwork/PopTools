@@ -121,14 +121,26 @@ void GPAK::Extract(const std::string &pakPath, const std::string &outputFolder)
 		in.read(reinterpret_cast<char *>(compressed.data()), compressed.size());
 
 		if (!password.empty())
-			compressed = AESDecrypt(compressed);
+		{
+			if (compressed.size() % 16 != 0)
+				throw std::runtime_error("Encrypted data size is not a multiple of AES block size");
 
+			compressed = AESDecrypt(compressed);
+		}
+
+		// Decompress
 		auto decompressed = Decompress(compressed, entry.originalSize);
+
+		if (decompressed.size() != entry.originalSize)
+			throw std::runtime_error("Decompressed size mismatch for file: " + std::string(entry.path));
 
 		fs::path outPath = fs::path(outputFolder) / entry.path;
 		fs::create_directories(outPath.parent_path());
 
 		std::ofstream out(outPath, std::ios::binary);
+		if (!out)
+			throw std::runtime_error("Failed to create output file: " + outPath.string());
+
 		out.write(reinterpret_cast<char *>(decompressed.data()), decompressed.size());
 	}
 }

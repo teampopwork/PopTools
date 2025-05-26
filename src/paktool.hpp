@@ -25,6 +25,8 @@ namespace PopWork
         
         void SetInputFolderPath(const std::string &theNewFolder);
 
+        void Extract(const std::string& pakPath, const std::string& outputFolder);
+
         ::GPAK *mGPAK; 
         std::string mPassword;
 

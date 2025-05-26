@@ -14,112 +14,115 @@ bool doToolWindow = false;
 
 bool &GetDebugWindowToggle()
 {
-	return doToolWindow;
+    return doToolWindow;
 }
 
 std::string pw_str{"PopCapPopWorkFramework"};
-
 std::string pakName_str{"main.gpak"};
-
 std::string inputFolder_str{""};
 
+std::string extractPak_str{""};
+std::string extractOutputFolder_str{""};
+
 void OnFolderSelected(void* userdata, const char* const* selections, int count) {
-	if (selections[0] != NULL)
-    	inputFolder_str = selections[0];
-	if (inputFolder_str.empty())
-		inputFolder_str = "";
-	gPopPak->SetInputFolderPath(inputFolder_str);
+    if (selections[0] != NULL)
+        inputFolder_str = selections[0];
+    gPopPak->SetInputFolderPath(inputFolder_str);
+}
+
+void OnExtractFolderSelected(void* userdata, const char* const* selections, int count) {
+    if (selections[0] != NULL)
+        extractOutputFolder_str = selections[0];
+}
+
+void OnPakFileSelected(void* userdata, const char* const* selections, int count) {
+    if (selections[0] != NULL)
+        extractPak_str = selections[0];
 }
 
 static struct RegisterDebugWindow
 {
-	RegisterDebugWindow()
-	{
-		RegisterImGuiWindow("MainWindow", &doToolWindow, [] {
-			ImGuiIO& io = ImGui::GetIO();
+    RegisterDebugWindow()
+    {
+        RegisterImGuiWindow("MainWindow", &doToolWindow, [] {
+            ImGuiIO& io = ImGui::GetIO();
 
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0)); //Make sure there is NO padding
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetNextWindowSize(io.DisplaySize);
+            ImGui::Begin("Window", &doToolWindow,
+                ImGuiWindowFlags_NoResize |
+                ImGuiWindowFlags_NoTitleBar |
+                ImGuiWindowFlags_NoMove |
+                ImGuiWindowFlags_NoCollapse |
+                ImGuiWindowFlags_NoScrollbar |
+                ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-			ImGui::SetNextWindowPos(ImVec2(0, 0));
-			ImGui::SetNextWindowSize(io.DisplaySize);
-			ImGui::Begin("Window", &doToolWindow,
-			ImGuiWindowFlags_NoResize |
-			ImGuiWindowFlags_NoTitleBar |
-			ImGuiWindowFlags_NoMove |
-			ImGuiWindowFlags_NoCollapse |
-			ImGuiWindowFlags_NoScrollbar |
-			ImGuiWindowFlags_NoBringToFrontOnFocus);
+            ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.1f, 0.1f, 0.12f, 1.0f));
+            ImGui::BeginChild("TitleBar", ImVec2(0, 30), false, ImGuiWindowFlags_NoScrollbar);
+            ImGui::SetCursorPos(ImVec2(10, 10));
+            ImGui::Text("PopPak");
+            ImGui::SetCursorPos(ImVec2(775, 5));
+            if (ImGui::Button("X")) doToolWindow = false;
+            ImGui::SetCursorPos(ImVec2(750, 5));
+            if (ImGui::Button("-")) SDL_MinimizeWindow(gImGuiManager->mSDLInstance.mWindow);
+            ImGui::EndChild();
+            ImGui::PopStyleColor();
+            ImGui::PopStyleVar();
 
-			ImVec2 titleBarSize = ImVec2(ImGui::GetWindowWidth(), 30.0f);
-			ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.1f, 0.1f, 0.12f, 1.0f));
-			ImGui::BeginChild("TitleBar", ImVec2(0, 30), false, ImGuiWindowFlags_NoScrollbar);
-			ImGui::SetCursorPos(ImVec2(10, 10));
-			ImGui::Text("PopPak");
-			ImGui::SetCursorPos(ImVec2(775, 5));
-			if (ImGui::Button("X"))
-			{
-				doToolWindow = false;
-			}
-			ImGui::SetCursorPos(ImVec2(750, 5));
-			if (ImGui::Button("-"))
-			{
-				SDL_MinimizeWindow(gImGuiManager->mSDLInstance.mWindow);
-			}
-			ImGui::EndChild();
-			ImGui::PopStyleColor(); // Restore background color
-			ImGui::PopStyleVar();//Now we can have padding and more.
+            ImGui::InputText("Encryption Password", &pw_str, ImGuiInputTextFlags_CallbackAlways,
+                [](ImGuiInputTextCallbackData* data) {
+                    gPopPak->SetPassword(pw_str);
+                    return 0;
+                });
 
-	    	ImGui::InputText("Encryption Password",
-			&pw_str,
-			ImGuiInputTextFlags_CallbackAlways,
-			[](ImGuiInputTextCallbackData* data) -> int {
-        	gPopPak->SetPassword(pw_str);
-        	return 0;
-    		});
+            ImGui::InputText("GPAK output name", &pakName_str, ImGuiInputTextFlags_CallbackAlways,
+                [](ImGuiInputTextCallbackData* data) {
+                    gPopPak->SetPakName(pakName_str);
+                    return 0;
+                });
 
-	    	ImGui::InputText("Pak output name",
-			&pakName_str,
-			ImGuiInputTextFlags_CallbackAlways,
-			[](ImGuiInputTextCallbackData* data) -> int {
-        	gPopPak->SetPakName(pakName_str);
-        	return 0;
-    		});
+            ImGui::InputText("Folder to package", &inputFolder_str, ImGuiInputTextFlags_ReadOnly);
+            if (ImGui::Button("Open Folder..."))
+                SDL_ShowOpenFolderDialog(OnFolderSelected, nullptr, gImGuiManager->mSDLInstance.mWindow, nullptr, false);
 
-			if (ImGui::Button("Open File Dialog"))
-			{
-				SDL_ShowOpenFolderDialog(OnFolderSelected, nullptr, gImGuiManager->mSDLInstance.mWindow, nullptr, false);
-			}
+            ImGui::SetCursorPos(ImVec2(680, 300));
+            if (ImGui::Button("Create GPAK"))
+            {
+                gPopPak->SetPassword(pw_str);
+                gPopPak->SetPakName(pakName_str);
+                gPopPak->SetInputFolderPath(inputFolder_str);
+                gPopPak->Package();
+            }
 
-	    	ImGui::InputText("Folder to package",
-			&inputFolder_str,
-			ImGuiInputTextFlags_CallbackAlways,
-			[](ImGuiInputTextCallbackData* data) -> int {
-        	gPopPak->SetInputFolderPath(inputFolder_str);
-        	return 0;
-    		});
+            ImGui::Separator();
+            ImGui::Text("Extraction");
 
+            ImGui::InputText("GPAK to extract", &extractPak_str, ImGuiInputTextFlags_ReadOnly);
+            if (ImGui::Button("Open Pak File..."))
+                SDL_ShowOpenFileDialog(OnPakFileSelected, nullptr, gImGuiManager->mSDLInstance.mWindow, nullptr, 0, nullptr, false);
 
-			ImGui::SetCursorPos(ImVec2(680, 560));
-			if (ImGui::Button("Create GPAK"))
-			{
-				//Ensure the values are set.
-				gPopPak->SetPassword(pw_str);
-				gPopPak->SetPakName(pakName_str);
-				gPopPak->SetInputFolderPath(inputFolder_str);
-				gPopPak->Package();
-			}
+            ImGui::InputText("Output folder", &extractOutputFolder_str, ImGuiInputTextFlags_ReadOnly);
+            if (ImGui::Button("Choose Output Folder..."))
+                SDL_ShowOpenFolderDialog(OnExtractFolderSelected, nullptr, gImGuiManager->mSDLInstance.mWindow, nullptr, false);
 
-			ImGui::End();
-			if (gPopPak->mDoProgressBar)
-			{
-				ImGui::Begin("Packing");
+            ImGui::SetCursorPos(ImVec2(680, 560));
+            if (ImGui::Button("Extract GPAK"))
+            {
+                if (!extractPak_str.empty() && !extractOutputFolder_str.empty())
+                    gPopPak->Extract(extractPak_str, extractOutputFolder_str);
+            }
 
-				ImGui::Text("Packing in progress");
+            ImGui::End();
 
-				ImGui::End();
-			}
-		});
-	}
+            if (gPopPak->mDoProgressBar)
+            {
+                ImGui::Begin("Progress");
+                ImGui::Text("Operation in progress...");
+                ImGui::End();
+            }
+        });
+    }
 } registerDebugWindow;
 
-#endif
+#endif // __DEBUGWINDOW_HPP__
