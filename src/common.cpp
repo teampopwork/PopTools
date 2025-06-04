@@ -6,8 +6,8 @@
 #include <cstdarg>
 #include <wchar.h>
 
-bool PopWork::gDebug = false;
-namespace PopWork
+bool PopLib::gDebug = false;
+namespace PopLib
 {
 #ifdef _WIN32
 std::string gAppDataFolder = std::filesystem::path(std::getenv("LOCALAPPDATA")).string() + "/";
@@ -16,22 +16,22 @@ std::string gAppDataFolder = std::filesystem::path(std::getenv("HOME")).string()
 #endif
 }
 
-bool PopWork::CheckFor98Mill()
+bool PopLib::CheckFor98Mill()
 {
 	return false;
 }
 
-bool PopWork::CheckForVista()
+bool PopLib::CheckForVista()
 {
 	return false;
 }
 
-std::string PopWork::GetAppDataFolder()
+std::string PopLib::GetAppDataFolder()
 {
-	return PopWork::gAppDataFolder;
+	return PopLib::gAppDataFolder;
 }
 
-void PopWork::SetAppDataFolder(const std::string &thePath)
+void PopLib::SetAppDataFolder(const std::string &thePath)
 {
 	/*
 	std::string aPath = thePath;
@@ -41,11 +41,11 @@ void PopWork::SetAppDataFolder(const std::string &thePath)
 			aPath += '\\';
 	}
 
-	PopWork::gAppDataFolder = aPath;
+	PopLib::gAppDataFolder = aPath;
 	*/
 }
 
-std::string PopWork::URLEncode(const std::string &theString)
+std::string PopLib::URLEncode(const std::string &theString)
 {
 	const char *aHexChars = "0123456789ABCDEF";
 
@@ -77,7 +77,7 @@ std::string PopWork::URLEncode(const std::string &theString)
 	return aString;
 }
 
-std::string PopWork::StringToUpper(const std::string &theString)
+std::string PopLib::StringToUpper(const std::string &theString)
 {
 	std::string aString;
 
@@ -87,7 +87,7 @@ std::string PopWork::StringToUpper(const std::string &theString)
 	return aString;
 }
 
-std::wstring PopWork::StringToUpper(const std::wstring &theString)
+std::wstring PopLib::StringToUpper(const std::wstring &theString)
 {
 	std::wstring aString;
 
@@ -97,7 +97,7 @@ std::wstring PopWork::StringToUpper(const std::wstring &theString)
 	return aString;
 }
 
-std::string PopWork::StringToLower(const std::string &theString)
+std::string PopLib::StringToLower(const std::string &theString)
 {
 	std::string aString;
 
@@ -107,7 +107,7 @@ std::string PopWork::StringToLower(const std::string &theString)
 	return aString;
 }
 
-std::wstring PopWork::StringToLower(const std::wstring &theString)
+std::wstring PopLib::StringToLower(const std::wstring &theString)
 {
 	std::wstring aString;
 
@@ -117,7 +117,7 @@ std::wstring PopWork::StringToLower(const std::wstring &theString)
 	return aString;
 }
 
-std::wstring PopWork::StringToWString(const std::string &theString)
+std::wstring PopLib::StringToWString(const std::string &theString)
 {
 	std::wstring aString;
 	aString.reserve(theString.length());
@@ -126,7 +126,7 @@ std::wstring PopWork::StringToWString(const std::string &theString)
 	return aString;
 }
 
-std::string PopWork::WStringToString(const std::wstring &theString)
+std::string PopLib::WStringToString(const std::wstring &theString)
 {
 	size_t aRequiredLength = wcstombs(NULL, theString.c_str(), 0);
 	if (aRequiredLength < 16384)
@@ -149,7 +149,7 @@ std::string PopWork::WStringToString(const std::wstring &theString)
 	}
 }
 
-PopString PopWork::StringToPopString(const std::string &theString)
+PopString PopLib::StringToPopString(const std::string &theString)
 {
 #ifdef _USE_WIDE_STRING
 	return StringToWString(theString);
@@ -158,7 +158,7 @@ PopString PopWork::StringToPopString(const std::string &theString)
 #endif
 }
 
-PopString PopWork::WStringToPopString(const std::wstring &theString)
+PopString PopLib::WStringToPopString(const std::wstring &theString)
 {
 #ifdef _USE_WIDE_STRING
 	return PopString(theString);
@@ -167,7 +167,7 @@ PopString PopWork::WStringToPopString(const std::wstring &theString)
 #endif
 }
 
-std::string PopWork::PopStringToString(const PopString &theString)
+std::string PopLib::PopStringToString(const PopString &theString)
 {
 #ifdef _USE_WIDE_STRING
 	return WStringToString(theString);
@@ -176,7 +176,7 @@ std::string PopWork::PopStringToString(const PopString &theString)
 #endif
 }
 
-std::wstring PopWork::PopStringToWString(const PopString &theString)
+std::wstring PopLib::PopStringToWString(const PopString &theString)
 {
 #ifdef _USE_WIDE_STRING
 	return std::wstring(theString);
@@ -185,7 +185,7 @@ std::wstring PopWork::PopStringToWString(const PopString &theString)
 #endif
 }
 
-std::string PopWork::Trim(const std::string &theString)
+std::string PopLib::Trim(const std::string &theString)
 {
 	int aStartPos = 0;
 	while (aStartPos < (int)theString.length() && isspace((unsigned char)theString[aStartPos]))
@@ -198,7 +198,7 @@ std::string PopWork::Trim(const std::string &theString)
 	return theString.substr(aStartPos, anEndPos - aStartPos + 1);
 }
 
-std::wstring PopWork::Trim(const std::wstring &theString)
+std::wstring PopLib::Trim(const std::wstring &theString)
 {
 	int aStartPos = 0;
 	while (aStartPos < (int)theString.length() && iswspace(theString[aStartPos]))
@@ -211,7 +211,7 @@ std::wstring PopWork::Trim(const std::wstring &theString)
 	return theString.substr(aStartPos, anEndPos - aStartPos + 1);
 }
 
-bool PopWork::StringToInt(const std::string theString, int *theIntVal)
+bool PopLib::StringToInt(const std::string theString, int *theIntVal)
 {
 	*theIntVal = 0;
 
@@ -261,7 +261,7 @@ bool PopWork::StringToInt(const std::string theString, int *theIntVal)
 	return true;
 }
 
-bool PopWork::StringToInt(const std::wstring theString, int *theIntVal)
+bool PopLib::StringToInt(const std::wstring theString, int *theIntVal)
 {
 	*theIntVal = 0;
 
@@ -311,7 +311,7 @@ bool PopWork::StringToInt(const std::wstring theString, int *theIntVal)
 	return true;
 }
 
-bool PopWork::StringToDouble(const std::string theString, double *theDoubleVal)
+bool PopLib::StringToDouble(const std::string theString, double *theDoubleVal)
 {
 	*theDoubleVal = 0.0;
 
@@ -368,7 +368,7 @@ bool PopWork::StringToDouble(const std::string theString, double *theDoubleVal)
 	return true;
 }
 
-bool PopWork::StringToDouble(const std::wstring theString, double *theDoubleVal)
+bool PopLib::StringToDouble(const std::wstring theString, double *theDoubleVal)
 {
 	*theDoubleVal = 0.0;
 
@@ -426,7 +426,7 @@ bool PopWork::StringToDouble(const std::wstring theString, double *theDoubleVal)
 }
 
 // TODO: Use <locale> for localization of number output?
-PopString PopWork::CommaSeperate(int theValue)
+PopString PopLib::CommaSeperate(int theValue)
 {
 	if (theValue == 0)
 		return _S("0");
@@ -448,17 +448,17 @@ PopString PopWork::CommaSeperate(int theValue)
 	return aCurString;
 }
 
-std::string PopWork::GetCurDir()
+std::string PopLib::GetCurDir()
 {
     return std::filesystem::current_path().string();
 }
 
-std::string PopWork::GetFullPath(const std::string &theRelPath)
+std::string PopLib::GetFullPath(const std::string &theRelPath)
 {
 	return GetPathFrom(theRelPath, GetCurDir());
 }
 
-std::string PopWork::GetPathFrom(const std::string &theRelPath, const std::string &theDir)
+std::string PopLib::GetPathFrom(const std::string &theRelPath, const std::string &theDir)
 {
 	std::string aDriveString;
 	std::string aNewPath = theDir;
@@ -557,27 +557,27 @@ std::string PopWork::GetPathFrom(const std::string &theRelPath, const std::strin
 	return aNewPath;
 }
 
-bool PopWork::AllowAllAccess(const std::string &theFileName)
+bool PopLib::AllowAllAccess(const std::string &theFileName)
 {
 	return true;
 }
 
-bool PopWork::Deltree(const std::string &thePath)
+bool PopLib::Deltree(const std::string &thePath)
 {
 	return false;
 }
 
-bool PopWork::FileExists(const std::string &theFileName)
+bool PopLib::FileExists(const std::string &theFileName)
 {
     return std::filesystem::exists(theFileName);
 }
 
-void PopWork::MkDir(const std::string &theDir)
+void PopLib::MkDir(const std::string &theDir)
 {
 	std::filesystem::create_directories(theDir);
 }
 
-std::string PopWork::GetFileName(const std::string &thePath, bool noExtension)
+std::string PopLib::GetFileName(const std::string &thePath, bool noExtension)
 {
 	int aLastSlash = std::max((int)thePath.rfind('\\'), (int)thePath.rfind('/'));
 
@@ -594,7 +594,7 @@ std::string PopWork::GetFileName(const std::string &thePath, bool noExtension)
 		return thePath.substr(aLastSlash + 1);
 }
 
-std::string PopWork::GetFileDir(const std::string &thePath, bool withSlash)
+std::string PopLib::GetFileDir(const std::string &thePath, bool withSlash)
 {
 	int aLastSlash = std::max((int)thePath.rfind('\\'), (int)thePath.rfind('/'));
 
@@ -609,7 +609,7 @@ std::string PopWork::GetFileDir(const std::string &thePath, bool withSlash)
 	}
 }
 
-std::string PopWork::RemoveTrailingSlash(const std::string &theDirectory)
+std::string PopLib::RemoveTrailingSlash(const std::string &theDirectory)
 {
 	int aLen = theDirectory.length();
 
@@ -619,7 +619,7 @@ std::string PopWork::RemoveTrailingSlash(const std::string &theDirectory)
 		return theDirectory;
 }
 
-std::string PopWork::AddTrailingSlash(const std::string &theDirectory, bool backSlash)
+std::string PopLib::AddTrailingSlash(const std::string &theDirectory, bool backSlash)
 {
 	if (!theDirectory.empty())
 	{
@@ -633,7 +633,7 @@ std::string PopWork::AddTrailingSlash(const std::string &theDirectory, bool back
 		return "";
 }
 
-time_t PopWork::GetFileDate(const std::string &theFileName)
+time_t PopLib::GetFileDate(const std::string &theFileName)
 {
 	namespace fs = std::filesystem;
     try {
@@ -647,7 +647,7 @@ time_t PopWork::GetFileDate(const std::string &theFileName)
     }
 }
 
-std::string PopWork::vformat(const char *fmt, va_list argPtr)
+std::string PopLib::vformat(const char *fmt, va_list argPtr)
 {
 	// We draw the line at a 1MB string.
 	const int maxSize = 1000000;
@@ -702,7 +702,7 @@ std::string PopWork::vformat(const char *fmt, va_list argPtr)
 }
 
 // overloaded StrFormat: should only be used by the xml strings
-std::string PopWork::StrFormat(const char* fmt, ...)
+std::string PopLib::StrFormat(const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
@@ -725,7 +725,7 @@ std::string PopWork::StrFormat(const char* fmt, ...)
     return std::string(buffer.data());
 }
 
-std::wstring PopWork::vformat(const wchar_t *fmt, va_list argPtr)
+std::wstring PopLib::vformat(const wchar_t *fmt, va_list argPtr)
 {
 	// We draw the line at a 1MB string.
 	const int maxSize = 1000000;
@@ -781,7 +781,7 @@ std::wstring PopWork::vformat(const wchar_t *fmt, va_list argPtr)
 }
 
 // overloaded StrFormat: should only be used by the xml strings
-std::wstring PopWork::StrFormat(const wchar_t *fmt...)
+std::wstring PopLib::StrFormat(const wchar_t *fmt...)
 {
 	va_list argList;
 	va_start(argList, fmt);
@@ -791,7 +791,7 @@ std::wstring PopWork::StrFormat(const wchar_t *fmt...)
 	return result;
 }
 
-std::string PopWork::Evaluate(const std::string &theString, const DefinesMap &theDefinesMap)
+std::string PopLib::Evaluate(const std::string &theString, const DefinesMap &theDefinesMap)
 {
 	std::string anEvaluatedString = theString;
 
@@ -824,7 +824,7 @@ std::string PopWork::Evaluate(const std::string &theString, const DefinesMap &th
 	return anEvaluatedString;
 }
 
-std::string PopWork::XMLDecodeString(const std::string &theString)
+std::string PopLib::XMLDecodeString(const std::string &theString)
 {
 	std::string aNewString;
 
@@ -867,7 +867,7 @@ std::string PopWork::XMLDecodeString(const std::string &theString)
 	return aNewString;
 }
 
-std::wstring PopWork::XMLDecodeString(const std::wstring &theString)
+std::wstring PopLib::XMLDecodeString(const std::wstring &theString)
 {
 	std::wstring aNewString;
 
@@ -910,7 +910,7 @@ std::wstring PopWork::XMLDecodeString(const std::wstring &theString)
 	return aNewString;
 }
 
-std::string PopWork::XMLEncodeString(const std::string &theString)
+std::string PopLib::XMLEncodeString(const std::string &theString)
 {
 	std::string aNewString;
 
@@ -971,7 +971,7 @@ std::string PopWork::XMLEncodeString(const std::string &theString)
 	return aNewString;
 }
 
-std::wstring PopWork::XMLEncodeString(const std::wstring &theString)
+std::wstring PopLib::XMLEncodeString(const std::wstring &theString)
 {
 	std::wstring aNewString;
 
@@ -1032,28 +1032,28 @@ std::wstring PopWork::XMLEncodeString(const std::wstring &theString)
 	return aNewString;
 }
 
-std::string PopWork::Upper(const std::string &_data)
+std::string PopLib::Upper(const std::string &_data)
 {
 	std::string s = _data;
 	std::transform(s.begin(), s.end(), s.begin(), toupper);
 	return s;
 }
 
-std::wstring PopWork::Upper(const std::wstring &_data)
+std::wstring PopLib::Upper(const std::wstring &_data)
 {
 	std::wstring s = _data;
 	std::transform(s.begin(), s.end(), s.begin(), towupper);
 	return s;
 }
 
-std::string PopWork::Lower(const std::string &_data)
+std::string PopLib::Lower(const std::string &_data)
 {
 	std::string s = _data;
 	std::transform(s.begin(), s.end(), s.begin(), tolower);
 	return s;
 }
 
-std::wstring PopWork::Lower(const std::wstring &_data)
+std::wstring PopLib::Lower(const std::wstring &_data)
 {
 	std::wstring s = _data;
 	std::transform(s.begin(), s.end(), s.begin(), towlower);
@@ -1062,7 +1062,7 @@ std::wstring PopWork::Lower(const std::wstring &_data)
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-int PopWork::StrFindNoCase(const char *theStr, const char *theFind)
+int PopLib::StrFindNoCase(const char *theStr, const char *theFind)
 {
 	int p1, p2;
 	int cp = 0;
@@ -1091,7 +1091,7 @@ int PopWork::StrFindNoCase(const char *theStr, const char *theFind)
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-bool PopWork::StrPrefixNoCase(const char *theStr, const char *thePrefix, int maxLength)
+bool PopLib::StrPrefixNoCase(const char *theStr, const char *thePrefix, int maxLength)
 {
 	int i;
 	char c1 = 0, c2 = 0;

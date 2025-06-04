@@ -1,8 +1,8 @@
 #include "imguimanager.hpp"
 
-using namespace PopWork;
+using namespace PopLib;
 
-ImGuiManager *PopWork::gImGuiManager = nullptr;
+ImGuiManager *PopLib::gImGuiManager = nullptr;
 
 bool demoWind = false;
 

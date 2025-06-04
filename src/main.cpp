@@ -3,7 +3,7 @@
 #include "imgui/imguimanager.hpp"
 #include "imgui/paktoolwindow.hpp"
 
-using namespace PopWork;
+using namespace PopLib;
 
 extern bool doToolWindow;
 extern bool demoWind;

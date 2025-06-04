@@ -53,7 +53,7 @@ void GPAK::Create(const std::string &pakPath, const std::vector<std::string> &in
 	mProcessedFiles = 0;
 	for (const auto &fullPath : files)
 	{
-		PopWork::gPopPak->mCurrentProccesedFile = fullPath;
+		PopLib::gPopPak->mCurrentProccesedFile = fullPath;
 
 		std::ifstream in(fullPath, std::ios::binary | std::ios::ate);
 		if (!in)
@@ -123,7 +123,7 @@ void GPAK::Extract(const std::string &pakPath, const std::string &outputFolder)
 	
 	for (const auto &entry : entries)
 	{
-		PopWork::gPopPak->mCurrentProccesedFile = entry.path;
+		PopLib::gPopPak->mCurrentProccesedFile = entry.path;
 		in.seekg(entry.dataOffset);
 
 		std::vector<uint8_t> compressed(entry.compressedSize);

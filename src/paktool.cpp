@@ -1,9 +1,9 @@
 #include "paktool.hpp"
 #include <SDL3/SDL.h>
 
-using namespace PopWork;
+using namespace PopLib;
 
-PopPak *PopWork::gPopPak = nullptr;
+PopPak *PopLib::gPopPak = nullptr;
     
 int StartPacking(void *theArg)
 {

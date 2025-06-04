@@ -121,7 +121,7 @@ typedef std::map<std::wstring, std::wstring> WStringWStringMap;
 typedef PopString::value_type PopChar;
 #define HAS_PopChar
 
-namespace PopWork
+namespace PopLib
 {
 
 const ulong POPWORK_RAND_MAX = 0x7FFFFFFF;
@@ -244,7 +244,7 @@ struct StringLessNoCase
 	}
 };
 
-} // namespace PopWork
+} // namespace PopLib
 
 //We don't have debug.hpp in PopPak so we define DBG_ASSERTE here
 #define DBG_ASSERTE(exp)  

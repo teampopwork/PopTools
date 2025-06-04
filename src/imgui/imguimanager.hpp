@@ -13,7 +13,7 @@
 #include <vector>
 #include <functional>
 
-namespace PopWork
+namespace PopLib
 {
 
 /**
@@ -56,7 +56,7 @@ class ImGuiManager
 /// @brief Global instance of the ImGuiManager
 extern ImGuiManager *gImGuiManager;
 
-} // namespace PopWork
+} // namespace PopLib
 
 /// @brief the imgui window entry
 struct ImGuiWindowEntry
@@ -66,14 +66,14 @@ struct ImGuiWindowEntry
 	/// @brief pointer to external bool
 	bool *enabled;
 	/// @brief the function
-	PopWork::ImGuiManager::WindowFunction func;
+	PopLib::ImGuiManager::WindowFunction func;
 };
 
 /// @brief registers an imgui window
 /// @param name
 /// @param enabled
 /// @param func
-void RegisterImGuiWindow(const char *name, bool *enabled, const PopWork::ImGuiManager::WindowFunction &func);
+void RegisterImGuiWindow(const char *name, bool *enabled, const PopLib::ImGuiManager::WindowFunction &func);
 /// @brief registers all imgui windows
 void RegisterImGuiWindows();
 

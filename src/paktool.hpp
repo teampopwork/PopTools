@@ -8,7 +8,7 @@
 #include "gpak.hpp"
 
 
-namespace PopWork
+namespace PopLib
 {
     class PopPak
     {

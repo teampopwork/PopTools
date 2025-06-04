@@ -4,7 +4,7 @@
 #pragma once
 #endif
 
-using namespace PopWork;
+using namespace PopLib;
 
 #include "imguimanager.hpp"
 #include "../paktool.hpp"
@@ -17,7 +17,7 @@ bool &GetDebugWindowToggle()
     return doToolWindow;
 }
 
-std::string pw_str{"PopCapPopWorkFramework"};
+std::string pw_str{"PopCapPopLibFramework"};
 std::string pakName_str{"main.gpak"};
 std::string inputFolder_str{""};
 
