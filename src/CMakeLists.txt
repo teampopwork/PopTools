@@ -84,9 +84,10 @@ set(EXTERNAL_DEPENDENCIES
 
 set(ALL_GROUPED_FILES ${SOURCE_FILES} ${HEADER_FILES} ${EXTERNAL_DEPENDENCIES})
 
-add_executable(PopPak ${ALL_GROUPED_FILES})
+add_executable(PopTools ${ALL_GROUPED_FILES})
 
-target_link_libraries(PopPak PUBLIC
+target_link_libraries(PopTools PUBLIC
     SDL3::SDL3-static
+    tinyxml2
     zlibstatic
 )

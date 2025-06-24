@@ -1,14 +1,17 @@
-#ifndef __DEBUGWINDOW_HPP__
-#define __DEBUGWINDOW_HPP__
+#ifndef __PAKTOOLWINDOW_HPP__
+#define __PAKTOOLWINDOW_HPP__
 #ifdef _WIN32
 #pragma once
 #endif
 
-using namespace PopLib;
-
-#include "imguimanager.hpp"
+#include "core/imgui.h"
+#include "core/imgui_impl_sdl3.h"
+#include "core/imgui_impl_sdlrenderer3.h"
 #include "../paktool.hpp"
+#include "../poptoolsgui.hpp"
 #include "core/imgui_stdlib.h"
+
+using namespace PopLib;
 
 bool doToolWindow = false;
 
@@ -42,101 +45,65 @@ void OnPakFileSelected(void* userdata, const char* const* selections, int count)
     gPopPak->mPathToPack = extractPak_str;
 }
 
-static struct RegisterDebugWindow
-{
-    RegisterDebugWindow()
+void DrawPoppakTab()
     {
-        RegisterImGuiWindow("MainWindow", &doToolWindow, [] {
-            ImGuiIO& io = ImGui::GetIO();
-
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-            ImGui::SetNextWindowPos(ImVec2(0, 0));
-            ImGui::SetNextWindowSize(io.DisplaySize);
-            ImGui::Begin("Window", &doToolWindow,
-                ImGuiWindowFlags_NoResize |
-                ImGuiWindowFlags_NoTitleBar |
-                ImGuiWindowFlags_NoMove |
-                ImGuiWindowFlags_NoCollapse |
-                ImGuiWindowFlags_NoScrollbar |
-                ImGuiWindowFlags_NoBringToFrontOnFocus);
-
-            ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.1f, 0.1f, 0.12f, 1.0f));
-            ImGui::BeginChild("TitleBar", ImVec2(0, 30), false, ImGuiWindowFlags_NoScrollbar);
-            ImGui::SetCursorPos(ImVec2(10, 10));
-            ImGui::Text("PopPak");
-            ImGui::SetCursorPos(ImVec2(775, 5));
-            if (ImGui::Button("X")) doToolWindow = false;
-            ImGui::SetCursorPos(ImVec2(750, 5));
-            if (ImGui::Button("-")) SDL_MinimizeWindow(gImGuiManager->mSDLInstance.mWindow);
-            ImGui::EndChild();
-            ImGui::PopStyleColor();
-            ImGui::PopStyleVar();
-
-            ImGui::BeginTabBar("#tabs", ImGuiTabBarFlags_None);
+        ImGui::BeginTabBar("Poppak", ImGuiTabBarFlags_None);
+        {
+            if (ImGui::BeginTabItem("Packing"))
             {
-                if (ImGui::BeginTabItem("Packing"))
-                {
-                    ImGui::InputText("Encryption Password", &pw_str, ImGuiInputTextFlags_CallbackAlways,
-                        [](ImGuiInputTextCallbackData* data) {
-                            gPopPak->mPakName = pakName_str;
-                            return 0;
-                        });
-
-                    ImGui::InputText("GPAK output name", &pakName_str, ImGuiInputTextFlags_CallbackAlways,
-                        [](ImGuiInputTextCallbackData* data) {
-                            gPopPak->mPakName = pakName_str;
-                            return 0;
-                        });
-
-                    ImGui::InputText("Folder to package", &inputFolder_str);
-                    if (ImGui::Button("Open Folder..."))
-                        SDL_ShowOpenFolderDialog(OnFolderSelected, nullptr, gImGuiManager->mSDLInstance.mWindow, nullptr, false);
-
-                    ImGui::SetCursorPos(ImVec2(680, 560));
-                    if (ImGui::Button("Create GPAK"))
-                    {
-                        gPopPak->mPassword = pw_str;
+                ImGui::InputText("Encryption Password", &pw_str, ImGuiInputTextFlags_CallbackAlways,
+                    [](ImGuiInputTextCallbackData* data) {
                         gPopPak->mPakName = pakName_str;
-                        gPopPak->mPakFileOutputFolder = inputFolder_str;
-                        gPopPak->Package();
-                    }
-                    ImGui::EndTabItem();
+                        return 0;
+                    });
+                ImGui::InputText("GPAK output name", &pakName_str, ImGuiInputTextFlags_CallbackAlways,
+                    [](ImGuiInputTextCallbackData* data) {
+                        gPopPak->mPakName = pakName_str;
+                        return 0;
+                    });
+                ImGui::InputText("Folder to package", &inputFolder_str);
+                if (ImGui::Button("Open Folder..."))
+                    SDL_ShowOpenFolderDialog(OnFolderSelected, nullptr, PopToolsGUI::mWindow, nullptr, false);
+                ImGui::SetCursorPos(ImVec2(680, 560));
+                if (ImGui::Button("Create GPAK"))
+                {
+                    gPopPak->mPassword = pw_str;
+                    gPopPak->mPakName = pakName_str;
+                    gPopPak->mPakFileOutputFolder = inputFolder_str;
+                    gPopPak->Package();
                 }
-                if (ImGui::BeginTabItem("Extract"))
-                {     
-                    ImGui::InputText("GPAK to extract", &extractPak_str);
-                    if (ImGui::Button("Open Pak File..."))
-                        SDL_ShowOpenFileDialog(OnPakFileSelected, nullptr, gImGuiManager->mSDLInstance.mWindow, nullptr, 0, nullptr, false);
-
-                    ImGui::InputText("Output folder", &extractOutputFolder_str);
-                    if (ImGui::Button("Choose Output Folder..."))
-                        SDL_ShowOpenFolderDialog(OnExtractFolderSelected, nullptr, gImGuiManager->mSDLInstance.mWindow, nullptr, false);
-
-                    ImGui::SetCursorPos(ImVec2(680, 560));
-                    if (ImGui::Button("Extract GPAK"))
-                    {
-                        gPopPak->mPassword = pw_str;
-                        gPopPak->mUnpackOutputFolder = extractOutputFolder_str;
-                        gPopPak->mPathToPack = extractPak_str;
-                        gPopPak->Extract();
-                    }
-                    ImGui::EndTabItem();
+                ImGui::EndTabItem();
                 }
-                ImGui::EndTabBar();
+            if (ImGui::BeginTabItem("Extract"))
+            {     
+                ImGui::InputText("GPAK to extract", &extractPak_str);
+                if (ImGui::Button("Open Pak File..."))
+                    SDL_ShowOpenFileDialog(OnPakFileSelected, nullptr, PopToolsGUI::mWindow, nullptr, 0, nullptr, false);
+                ImGui::InputText("Output folder", &extractOutputFolder_str);
+                if (ImGui::Button("Choose Output Folder..."))
+                    SDL_ShowOpenFolderDialog(OnExtractFolderSelected, nullptr, PopToolsGUI::mWindow, nullptr, false);
+                ImGui::SetCursorPos(ImVec2(680, 560));
+                if (ImGui::Button("Extract GPAK"))
+                {
+                    gPopPak->mPassword = pw_str;
+                    gPopPak->mUnpackOutputFolder = extractOutputFolder_str;
+                    gPopPak->mPathToPack = extractPak_str;
+                    gPopPak->Extract();
+                }
+                ImGui::EndTabItem();
             }
+            ImGui::EndTabBar();
+        }
+
+        if (gPopPak->mDoProgressBar)
+        {
+            ImGui::Begin("Progress", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Text("Operation in progress...");
+            ImGui::Text((gPopPak->mCurrentOperation + ": " + gPopPak->mCurrentProccesedFile).c_str());
+            if (gPopPak->mGPAK->mTotalFiles > 0)
+                ImGui::ProgressBar((float)gPopPak->mGPAK->mProcessedFiles / (float)gPopPak->mGPAK->mTotalFiles);
             ImGui::End();
-
-            if (gPopPak->mDoProgressBar)
-            {
-                ImGui::Begin("Progress", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-                ImGui::Text("Operation in progress...");
-                ImGui::Text((gPopPak->mCurrentOperation + ": " + gPopPak->mCurrentProccesedFile).c_str());
-                if (gPopPak->mGPAK->mTotalFiles > 0)
-                    ImGui::ProgressBar((float)gPopPak->mGPAK->mProcessedFiles / (float)gPopPak->mGPAK->mTotalFiles);
-                ImGui::End();
-            }
-        });
+        }
     }
-} registerDebugWindow;
 
-#endif // __DEBUGWINDOW_HPP__
+#endif // __PAKTOOLWINDOW_HPP__
